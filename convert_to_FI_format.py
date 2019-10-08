@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 """
 ##################################################
@@ -16,6 +16,7 @@ e.g.    Col1 | Col2  ->   Col1
 """
 
 import sys
+import filter_results as fr
 
 
 def open_file(file_name):
@@ -34,9 +35,10 @@ def open_file(file_name):
         print("ERROR: Check input file.", e.args)
         exit(1)
 
+
 def process_content(file_name):
     """
-    This function reads the content of an opened file and extracts and returns fusion partners.
+    This function reads the content of an opened file and extracts and returns fusion partners after filtering.
 
     :param file_name: name of input file going to be processed.
     :return: string containing all fusion partners in the desired format \
@@ -46,11 +48,16 @@ def process_content(file_name):
     file_content = open_file(file_name)
     for line in file_content:
         if not line.startswith("Gene_1_symbol"):
+
             splitted_line = line.split("\t")
-            left_gene = splitted_line[0]
-            right_gene = splitted_line[1]
-            if left_gene + "--" + right_gene not in out_string:
-                out_string += left_gene + "--" + right_gene + "\n"
+            if not fr.check_row_false_positives(splitted_line[2]):
+                fusion_finding_method = splitted_line[7]
+                if ";" in fusion_finding_method:
+                    left_gene = splitted_line[0]
+                    right_gene = splitted_line[1]
+
+                    if left_gene + "--" + right_gene not in out_string:
+                        out_string += left_gene + "--" + right_gene + "\n"
     return out_string
 
 
@@ -64,12 +71,13 @@ def create_output_file(out_string, output_file):
     """
     try:
         with open(output_file, "w") as f_out:
-            f_out.write("Fusion_Partners\n")
+            f_out.write("#Fusion_Partners\n")
             f_out.write(out_string)
         f_out.close()
     except (FileNotFoundError, IOError) as e:
         print("ERROR: Check output file.", e.args)
         exit(1)
+
 
 def main():
     """
@@ -86,10 +94,9 @@ def main():
 
 
     except IndexError:
-        print("ERROR: 2 arguments expected" + "(" + str(len(sys.argv)-1) + " given)")
+        print("ERROR: 2 arguments expected" + "(" + str(len(sys.argv) - 1) + " given)")
         exit(1)
+
 
 if __name__ == "__main__":
     main()
-
-
