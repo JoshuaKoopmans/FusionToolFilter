@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+
+"""
+##################################################
+Center for Molecular and Biomolecular Informatics (CMBI) / RTC Bioinformatics
+Author: Joshua Koopmans
+Version: 1.0
+Email: Joshua.Koopmans@radboudumc.nl
+##################################################
+
+This script contains the methods used for the processing of STAR-Fusion outputs.
+"""
+
+
 def create_sf_output(output_file, out_string):
     """
         This function creates an output file and dumps the fusion partners in it.
@@ -20,10 +34,24 @@ def create_sf_output(output_file, out_string):
 
 
 def check_value_above_filter(value, threshold):
+    """
+    Returns a boolean to indicate value at or above threshold.
+
+    :param value: integer from a column "*read count".
+    :param threshold: threshold for the filtering of these read counts.
+    :return: boolean whether integer is equal or greater than threshold.
+    """
     return int(value) >= threshold
 
 
 def process_star_fusion(file_content, threshold=8):
+    """
+    This function reads the content of an opened file and filters the rows.
+
+    :param file_content: content of input file going to be processed.
+    :param threshold: threshold for the filtering of these read counts. Default is 8.
+    :return: file with all rows after filtering.
+    """
     out_string = ""
     try:
         for line in file_content:

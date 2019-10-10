@@ -1,7 +1,21 @@
+#!/usr/bin/env python
 import argparse
 
-from fusioncatcher.filter_results import create_fc_output, process_fusion_catcher
-from starfusion.filter_results import create_sf_output, process_star_fusion
+from fusioncatcher.methods import create_fc_output, process_fusion_catcher
+from starfusion.methods import create_sf_output, process_star_fusion
+
+"""
+##################################################
+Center for Molecular and Biomolecular Informatics (CMBI) / RTC Bioinformatics
+Author: Joshua Koopmans
+Version: 1.0
+Email: Joshua.Koopmans@radboudumc.nl
+##################################################
+
+This script controls the logic of the CLI program. Arguments are created and parsed, 
+and depending on the arguments, specific methods are executed.
+This script makes use of the python packages "fusioncatcher" and "starfusion". 
+"""
 
 
 def open_file(file_name):
@@ -22,6 +36,10 @@ def open_file(file_name):
 
 
 def main():
+    """
+    Logic of program. Arguments passed are parsed and assigned to variables.
+    Depending on the selected fusion detection tool, some logic specific for that tool is executed.
+    """
     args = parse_arguments()
     input_file = args.input
     output_file = args.output
@@ -38,6 +56,11 @@ def main():
 
 
 def parse_arguments():
+    """
+    Using argparse, arguments are added for the CLI program.
+    Input types, default values, help messages, choices, etc. are declared while adding an argument.
+    :return: Object with parsed arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Filter output of either STAR-Fusion or fusionCatcher fusion gene detection tool.")
     parser.add_argument("-i", "--input", type=str, required=True, help="Input file in TSV format")
@@ -46,6 +69,9 @@ def parse_arguments():
                         choices=["starfusion", "fusioncatcher"])
     parser.add_argument("--threshold", type=int, help="Amount of reads to filter by (only starfusion)", default=8)
     args = parser.parse_args()
+
+    # Only if starfusion is the selected tool will you be able to specify a threshold.
+    # FusionCatcher output is filtered on terms.
     if args.tool != 'starfusion' and args.threshold != 8:
         parser.error('--threshold can only be set when --tool=starfusion.')
         exit(1)

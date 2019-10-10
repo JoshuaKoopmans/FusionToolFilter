@@ -1,5 +1,5 @@
 import unittest
-from starfusion.filter_results import process_star_fusion, check_value_above_filter
+from starfusion.methods import process_star_fusion, check_value_above_filter
 
 
 class SolutionProcess:

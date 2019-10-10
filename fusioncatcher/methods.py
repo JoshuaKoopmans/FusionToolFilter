@@ -8,8 +8,7 @@ Version: 1.0
 Email: Joshua.Koopmans@radboudumc.nl
 ##################################################
 
-This program returns a boolean when supplied with the value
-of a row with the column "Fusion_description" in the FusionCatcher output file.
+This script contains the methods used for the processing of FusionCatcher outputs.
 """
 
 banned_term = ["1000genomes", "banned", "bodymap2", "cacg", "conjoing",
@@ -27,9 +26,10 @@ def check_row_false_positives(value):
     """
     Checks if string in splitted line contains banned terms that indicates possible false positive results.
 
-    :param row: splitted line of FusionCatcher output
+    :param value: column "fusion_description" value of splitted line of FusionCatcher output.
     :return: boolean whether string contains banned terms.
     """
+
     if any(term in value for term in banned_term):
         return True
     return False
