@@ -44,14 +44,16 @@ def check_value_above_filter(value, threshold):
     return int(value) >= threshold
 
 
-def process_star_fusion(file_content, threshold=8):
+def process_star_fusion(file_content, spanning_threshold=8, junction_threshold=8):
     """
     This function reads the content of an opened file and filters the rows.
 
     :param file_content: content of input file going to be processed.
-    :param threshold: threshold for the filtering of these read counts. Default is 8.
-    :return: file with all rows after filtering.
+    :param spanning_threshold: Amount of spanning reads to filter by.
+    :param junction_threshold: Amount of junction reads to filter by.
+    :return:
     """
+
     out_string = ""
     try:
         for line in file_content:
@@ -59,8 +61,8 @@ def process_star_fusion(file_content, threshold=8):
                 splitted_line = line.split("\t")
                 junction_read_count = splitted_line[1]
                 spanning_read_count = splitted_line[2]
-                if check_value_above_filter(junction_read_count, threshold) and \
-                        check_value_above_filter(spanning_read_count, threshold):
+                if check_value_above_filter(junction_read_count, junction_threshold) and \
+                        check_value_above_filter(spanning_read_count, spanning_threshold):
                     out_string += line
         return out_string
     except:

@@ -46,8 +46,9 @@ def main():
     file_content = open_file(input_file)
 
     if args.tool == "starfusion":
-        read_count_threshold = args.threshold
-        out_string = process_star_fusion(file_content, read_count_threshold)
+        junction_threshold = args.threshold_junction
+        spanning_threshold = args.threshold_spanning
+        out_string = process_star_fusion(file_content, spanning_threshold, junction_threshold)
         create_sf_output(output_file, out_string)
 
     if args.tool == "fusioncatcher":
@@ -67,13 +68,21 @@ def parse_arguments():
     parser.add_argument("-o", "--output", type=str, required=True, help="Desired output file name")
     parser.add_argument("-t", "--tool", required=True, help="Select tool that generated output file",
                         choices=["starfusion", "fusioncatcher"])
-    parser.add_argument("--threshold", type=int, help="Amount of reads to filter by (only starfusion)", default=8)
+    parser.add_argument("--threshold-junction", type=int,
+                        help="Amount of junction reads to filter by (only starfusion)",
+                        default=8)
+    parser.add_argument("--threshold-spanning", type=int, help="Amount of spanning frag reads to filter by "
+                                                               "(only starfusion)",
+                        default=8)
     args = parser.parse_args()
 
     # Only if starfusion is the selected tool will you be able to specify a threshold.
     # FusionCatcher output is filtered on terms.
-    if args.tool != 'starfusion' and args.threshold != 8:
-        parser.error('--threshold can only be set when --tool=starfusion.')
+    if args.tool != 'starfusion' and args.threshold_junction != 8:
+        parser.error('--threshold-junction can only be set when --tool=starfusion.')
+        exit(1)
+    if args.tool != 'starfusion' and args.threshold_spanning != 8:
+        parser.error('--threshold-spanning can only be set when --tool=starfusion.')
         exit(1)
     return args
 
