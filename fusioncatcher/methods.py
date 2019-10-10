@@ -45,7 +45,13 @@ def create_fc_output(output_file, out_string):
         """
     try:
         with open(output_file, "w") as f_out:
-            f_out.write("#Fusion_Partners\n")
+            f_out.write("#Fusion_Partners\tGene_1_symbol(5end_fusion_partner)\tGene_2_symbol("
+                        "3end_fusion_partner)\tFusion_description\tCounts_of_common_mapping_reads\tSpanning_pairs"
+                        "\tSpanning_unique_reads\tLongest_anchor_found\tFusion_finding_method"
+                        "\tFusion_point_for_gene_1(5end_fusion_partner)\tFusion_point_for_gene_2("
+                        "3end_fusion_partner)\tGene_1_id(5end_fusion_partner)\tGene_2_id("
+                        "3end_fusion_partner)\tExon_1_id(5end_fusion_partner)\tExon_2_id("
+                        "3end_fusion_partner)\tFusion_sequence\tPredicted_effect\n")
             f_out.write(out_string)
         f_out.close()
     except (FileNotFoundError, IOError) as e:
@@ -73,7 +79,7 @@ def process_fusion_catcher(file_content):
                         right_gene = splitted_line[1]
 
                         if left_gene + "--" + right_gene not in out_string:
-                            out_string += left_gene + "--" + right_gene + "\n"
+                            out_string += left_gene + "--" + right_gene + "\t" + line
         return out_string
     except:
         print("ERROR: input file not from selected tool.")
