@@ -5,7 +5,7 @@ from starfusion.methods import process_star_fusion, check_value_above_filter
 class SolutionProcess:
 
     def process_star_fusion(self):
-        with open("test_dependencies/ERR3003549.fusion_predictions.tsv", "r") as f:
+        with open("tests/test_dependencies/ERR3003549.fusion_predictions.tsv", "r") as f:
             file_content = f.readlines()
         f.close()
         return process_star_fusion(file_content, 20).split("\t")[0]

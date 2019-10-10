@@ -5,10 +5,10 @@ from fusioncatcher.methods import check_row_false_positives, process_fusion_catc
 class SolutionProcess:
 
     def process_fusion_catcher(self):
-        with open("test_dependencies/final-list_candidate-fusion-genes.tsv", "r") as f:
+        with open("tests/test_dependencies/final-list_candidate-fusion-genes.tsv", "r") as f:
             file_content = f.readlines()
         f.close()
-        return process_fusion_catcher(file_content)
+        return process_fusion_catcher(file_content).split("\t")[:4]
 
 
 class TestFusionCatcherFilter(unittest.TestCase):
@@ -20,7 +20,8 @@ class TestFusionCatcherFilter(unittest.TestCase):
 
     def test_processing(self):
         ex = SolutionProcess()
-        self.assertEqual(ex.process_fusion_catcher(), "ABL1--BCR\nBCR--ABL1\nAL133467.2--TCL6\n")
+        self.assertEqual(ex.process_fusion_catcher(), ['ABL1--BCR', 'ABL1', 'BCR',
+                                                       'known,oncogene,chimerdb2,cgp,ticdb,tcga,cell_lines,chimerdb3kb,chimerdb3pub,chimerdb3seq,cancer,tumor,m401,tcga-cancer,tcga2,mitelman,exon-exon,reciprocal'])
 
 
 if __name__ == '__main__':
