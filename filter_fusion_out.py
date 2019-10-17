@@ -96,7 +96,7 @@ def parse_arguments():
     if (args.tool != 'starfusion' or args.tool != "jaffa") and args.threshold_spanning != 8:
         parser.error('--threshold-spanning can only be set when --tool=starfusion or --tool=jaffa.')
         exit(1)
-    if args.tool != 'jaffa' and args.confidence_threshold != "HighConfidence":
+    if args.tool != 'jaffa' and args.threshold_confidence != "HighConfidence":
         parser.error('--threshold-confidence can only be set when --tool=jaffa.')
         exit(1)
     return args

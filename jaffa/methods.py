@@ -22,8 +22,9 @@ def create_jaffa_output(output_file, out_string):
         """
     try:
         with open(output_file, "w") as f_out:
-            f_out.write("transcript\tspanning_pairs\tspanning_reads\tcontig_break\tchrom1\tbase1\tstrand1\tchrom2\t"
-                        "base2\tstrand2\tgap\trearrangement\taligns\tinframe\tfusion_genes\tknown\tclassification\n")
+            f_out.write("sample\tfusion genes\tchrom1\tbase1\tstrand1\tchrom2\tbase2\tstrand2\tgap (kb)\t"
+                        "spanning pairs\tspanning reads\tinframe\taligns\trearrangement\tcontig\tcontig break\t"
+                        "classification\tknown\n")
             f_out.write(out_string)
         f_out.close()
     except (FileNotFoundError, IOError) as e:
@@ -60,9 +61,13 @@ def process_jaffa(file_content, confidence_threshold="HighConfidence", spanning_
     try:
         for line in file_content:
             if not line.startswith("transcript"):
+                line = str(line).replace(",", "\t")
+                print(line)
                 splitted_line = line.split("\t")
-                spanning_read_count = splitted_line[2]
-                confidence = splitted_line[16]
+
+                spanning_read_count = splitted_line[10]
+                confidence = str(splitted_line[16]).replace("\"", "")
+
                 if check_value_above_filter(confidence, confidence_threshold, string=True) and \
                         check_value_above_filter(spanning_read_count, spanning_reads):
                     out_string += line
