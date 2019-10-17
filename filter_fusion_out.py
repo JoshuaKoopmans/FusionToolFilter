@@ -3,6 +3,7 @@ import argparse
 
 from fusioncatcher.methods import create_fc_output, process_fusion_catcher
 from starfusion.methods import create_sf_output, process_star_fusion
+from jaffa.methods import create_jaffa_output, process_jaffa
 
 """
 ##################################################
@@ -55,6 +56,12 @@ def main():
         out_string = process_fusion_catcher(file_content)
         create_fc_output(output_file, out_string)
 
+    if args.tool == "jaffa":
+        spanning_threshold = args.threshold_spanning
+        confidence_threshold = args.threshold_confidence
+        out_string = process_jaffa(file_content, confidence_threshold, spanning_threshold)
+        create_jaffa_output(output_file, out_string)
+
 
 def parse_arguments():
     """
@@ -67,22 +74,30 @@ def parse_arguments():
     parser.add_argument("-i", "--input", type=str, required=True, help="Input file in TSV format")
     parser.add_argument("-o", "--output", type=str, required=True, help="Desired output file name")
     parser.add_argument("-t", "--tool", required=True, help="Select tool that generated output file",
-                        choices=["starfusion", "fusioncatcher"])
+                        choices=["starfusion", "fusioncatcher", "jaffa"])
     parser.add_argument("--threshold-junction", type=int,
                         help="Amount of junction reads to filter by (only starfusion)",
                         default=8)
     parser.add_argument("--threshold-spanning", type=int, help="Amount of spanning frag reads to filter by "
                                                                "(only starfusion)",
                         default=8)
+    parser.add_argument("--threshold-confidence", type=str, help="Confidence level to filter by (only jaffa)",
+                        default="HighConfidence", choices=["HighConfidence", "MediumConfidence", "LowConfidence"])
+
     args = parser.parse_args()
 
-    # Only if starfusion is the selected tool will you be able to specify a threshold.
+    # Only if starfusion or jaffa is the selected tool will you be able to specify a threshold for spanning reads.
+    # Only is starfusion is the selected tool will you be able to specify a threshold for junction reads.
+    # Only is jaffa is the selected tool will you be able to specify a threshold confidence.
     # FusionCatcher output is filtered on terms.
     if args.tool != 'starfusion' and args.threshold_junction != 8:
         parser.error('--threshold-junction can only be set when --tool=starfusion.')
         exit(1)
-    if args.tool != 'starfusion' and args.threshold_spanning != 8:
-        parser.error('--threshold-spanning can only be set when --tool=starfusion.')
+    if (args.tool != 'starfusion' or args.tool != "jaffa") and args.threshold_spanning != 8:
+        parser.error('--threshold-spanning can only be set when --tool=starfusion or --tool=jaffa.')
+        exit(1)
+    if args.tool != 'jaffa' and args.confidence_threshold != "HighConfidence":
+        parser.error('--threshold-confidence can only be set when --tool=jaffa.')
         exit(1)
     return args
 

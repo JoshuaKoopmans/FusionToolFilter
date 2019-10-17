@@ -8,11 +8,11 @@ Version: 1.0
 Email: Joshua.Koopmans@radboudumc.nl
 ##################################################
 
-This script contains the methods used for the processing of STAR-Fusion outputs.
+This script contains the methods used for the processing of JAFFA outputs.
 """
 
 
-def create_sf_output(output_file, out_string):
+def create_jaffa_output(output_file, out_string):
     """
         This function creates an output file and dumps the fusion partners in it.
 
@@ -22,10 +22,8 @@ def create_sf_output(output_file, out_string):
         """
     try:
         with open(output_file, "w") as f_out:
-            f_out.write("#FusionName\tJunctionReadCount\tSpanningFragCount\tSpliceType\tLeftGene\t"
-                        "LeftBreakpoint\tRightGene\tRightBreakpoint\tJunctionReads\tSpanningFrags\t"
-                        "LargeAnchorSupport\tFFPM\tLeftBreakDinuc\tLeftBreakEntropy\tRightBreakDinuc\t"
-                        "RightBreakEntropy\tannots\n")
+            f_out.write("transcript\tspanning_pairs\tspanning_reads\tcontig_break\tchrom1\tbase1\tstrand1\tchrom2\t"
+                        "base2\tstrand2\tgap\trearrangement\taligns\tinframe\tfusion_genes\tknown\tclassification\n")
             f_out.write(out_string)
         f_out.close()
     except (FileNotFoundError, IOError) as e:
@@ -33,36 +31,40 @@ def create_sf_output(output_file, out_string):
         exit(1)
 
 
-def check_value_above_filter(value, threshold):
+def check_value_above_filter(value, threshold, string=False):
     """
     Returns a boolean to indicate value at or above threshold.
 
+    :param string: whether evaluation must be done on strings, else integers.
     :param value: integer from a column "*read count".
     :param threshold: threshold for the filtering of these read counts.
     :return: boolean whether integer is equal or greater than threshold.
     """
+    if string:
+        return str(value).strip() == threshold
+
     return int(value) >= threshold
 
 
-def process_star_fusion(file_content, spanning_threshold=8, junction_threshold=8):
+def process_jaffa(file_content, confidence_threshold="HighConfidence", spanning_reads=8):
     """
     This function reads the content of an opened file and filters the rows.
 
     :param file_content: content of input file going to be processed.
-    :param spanning_threshold: Amount of spanning reads to filter by.
-    :param junction_threshold: Amount of junction reads to filter by.
+    :param confidence_threshold: Confidence level to filter by.
+    :param spanning_reads: Amount of spanning reads to filter by.
     :return: String with filtered rows.
     """
 
     out_string = ""
     try:
         for line in file_content:
-            if not line.startswith("#"):
+            if not line.startswith("transcript"):
                 splitted_line = line.split("\t")
-                junction_read_count = splitted_line[1]
                 spanning_read_count = splitted_line[2]
-                if check_value_above_filter(junction_read_count, junction_threshold) and \
-                        check_value_above_filter(spanning_read_count, spanning_threshold):
+                confidence = splitted_line[16]
+                if check_value_above_filter(confidence, confidence_threshold, string=True) and \
+                        check_value_above_filter(spanning_read_count, spanning_reads):
                     out_string += line
         return out_string
     except:
