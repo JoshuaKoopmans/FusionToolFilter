@@ -45,7 +45,7 @@ def create_fc_output(output_file, out_string):
         """
     try:
         with open(output_file, "w") as f_out:
-            f_out.write("#Fusion_Partners\tGene_1_symbol(5end_fusion_partner)\tGene_2_symbol("
+            f_out.write("Gene_1_symbol(5end_fusion_partner)\tGene_2_symbol("
                         "3end_fusion_partner)\tFusion_description\tCounts_of_common_mapping_reads\tSpanning_pairs"
                         "\tSpanning_unique_reads\tLongest_anchor_found\tFusion_finding_method"
                         "\tFusion_point_for_gene_1(5end_fusion_partner)\tFusion_point_for_gene_2("
@@ -70,16 +70,15 @@ def process_fusion_catcher(file_content):
     out_string = ""
     try:
         for line in file_content:
+            # Parse everything except the header
             if not line.startswith("Gene_1_symbol"):
                 splitted_line = line.split("\t")
+                # Check if line contains banned terms indicating a false positive
                 if not check_row_false_positives(splitted_line[2]):
                     fusion_finding_method = splitted_line[7]
+                    # Only take the rows where the fusion finding method is a combination of aligners
                     if ";" in fusion_finding_method:
-                        left_gene = splitted_line[0]
-                        right_gene = splitted_line[1]
-
-                        if left_gene + "--" + right_gene not in out_string:
-                            out_string += left_gene + "--" + right_gene + "\t" + line
+                        out_string += line
         return out_string
     except:
         print("ERROR: input file not from selected tool.")
