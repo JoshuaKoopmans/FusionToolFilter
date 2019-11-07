@@ -4,6 +4,7 @@ import argparse
 from fusioncatcher.methods import create_fc_output, process_fusion_catcher
 from starfusion.methods import create_sf_output, process_star_fusion
 from jaffa.methods import create_jaffa_output, process_jaffa
+from arriba.methods import create_arriba_output, process_arriba
 
 """
 ##################################################
@@ -36,16 +37,6 @@ def open_file(file_name):
         exit(1)
 
 
-def check_value_above_filter(value, threshold):
-    """
-    Returns a boolean to indicate value at or above threshold.
-
-    :param value: integer from a column "*read count".
-    :param threshold: threshold for the filtering of these read counts.
-    :return: boolean whether integer is equal or greater than threshold.
-    """
-    return int(value) >= threshold
-
 def main():
     """
     Logic of program. Arguments passed are parsed and assigned to variables.
@@ -72,6 +63,11 @@ def main():
         out_string = process_jaffa(file_content, spanning_threshold)
         create_jaffa_output(output_file, out_string)
 
+    if args.tool == "arriba":
+        junction_threshold = args.threshold_junction
+        spanning_threshold = args.threshold_spanning
+        out_string = process_arriba(file_content, spanning_threshold, junction_threshold)
+        create_arriba_output(output_file, out_string)
 
 def parse_arguments():
     """
@@ -81,30 +77,30 @@ def parse_arguments():
     """
     parser = argparse.ArgumentParser(
         description="Filter output of either STAR-Fusion or fusionCatcher fusion gene detection tool.")
-    parser.add_argument("-i", "--input", type=str, required=True, help="Input file in TSV format")
+    parser.add_argument("-i", "--input", type=str, required=True, help="Input file")
     parser.add_argument("-o", "--output", type=str, required=True, help="Desired output file name")
     parser.add_argument("-t", "--tool", required=True, help="Select tool that generated output file",
                         choices=["starfusion", "fusioncatcher", "jaffa", "arriba"])
     parser.add_argument("--threshold-junction", type=int,
-                        help="Amount of junction reads to filter by (only starfusion)",
+                        help="Amount of junction reads to filter by (only starfusion & arriba)",
                         default=8)
     parser.add_argument("--threshold-spanning", type=int, help="Amount of spanning frag reads to filter by "
-                                                               "(only starfusion)",
+                                                               "(only starfusion & arriba)",
                         default=8)
     parser.add_argument("--threshold-confidence", type=str, help="Confidence level to filter by (only jaffa)",
                         default="HighConfidence", choices=["HighConfidence", "MediumConfidence", "LowConfidence"])
 
     args = parser.parse_args()
 
-    # Only if starfusion or jaffa is the selected tool will you be able to specify a threshold for spanning reads.
-    # Only is starfusion is the selected tool will you be able to specify a threshold for junction reads.
+    # Only if starfusion or jaffa or arriba is the selected tool will you be able to specify a threshold for spanning reads.
+    # Only is starfusion or arriba is the selected tool will you be able to specify a threshold for junction reads.
     # Only is jaffa is the selected tool will you be able to specify a threshold confidence.
     # FusionCatcher output is filtered on terms.
-    if args.tool != 'starfusion' and args.threshold_junction != 8:
-        parser.error('--threshold-junction can only be set when --tool=starfusion.')
+    if (args.tool != 'starfusion' or args.tool != "arriba") and args.threshold_junction != 8:
+        parser.error('--threshold-junction can only be set when --tool=starfusion or --tool=arriba.')
         exit(1)
-    if (args.tool != 'starfusion' or args.tool != "jaffa") and args.threshold_spanning != 8:
-        parser.error('--threshold-spanning can only be set when --tool=starfusion or --tool=jaffa.')
+    if (args.tool != 'starfusion' or args.tool != "jaffa" or args.tool != "arriba") and args.threshold_spanning != 8:
+        parser.error('--threshold-spanning can only be set when --tool=starfusion or --tool=jaffa or --tool=arriba.')
         exit(1)
     # if args.tool != 'jaffa' and args.threshold_confidence != "HighConfidence":
     #     parser.error('--threshold-confidence can only be set when --tool=jaffa.')
