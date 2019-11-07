@@ -10,7 +10,7 @@ Email: Joshua.Koopmans@radboudumc.nl
 
 This script contains the methods used for the processing of STAR-Fusion outputs.
 """
-
+from filter_fusion_out import check_value_above_filter
 
 def create_sf_output(output_file, out_string):
     """
@@ -32,16 +32,6 @@ def create_sf_output(output_file, out_string):
         print("ERROR: Check output file.", e.args)
         exit(1)
 
-
-def check_value_above_filter(value, threshold):
-    """
-    Returns a boolean to indicate value at or above threshold.
-
-    :param value: integer from a column "*read count".
-    :param threshold: threshold for the filtering of these read counts.
-    :return: boolean whether integer is equal or greater than threshold.
-    """
-    return int(value) >= threshold
 
 
 def process_star_fusion(file_content, spanning_threshold=8, junction_threshold=8):
