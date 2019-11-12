@@ -13,33 +13,42 @@ This script contains the methods used for the processing of Arriba outputs.
 from collective_script.methods import check_value_above_filter
 
 
-def create_arriba_output(output_file, out_string):
+def create_arriba_output(output_file, out_string, fusion_inspector_format, out_string_fusion_inspector=""):
     """
         This function creates an output file and dumps the fusion partners in it.
 
+        :param out_string_fusion_inspector:
+        :param fusion_inspector_format:
         :param out_string: string containing all fusion partners in the desired format \
                 (e.g. <fusion_partner_1>--<fusion_partner_2>).
         :param output_file: a file to dump he out_string into.
         """
+    header = "#gene1\tgene2\tstrand1(gene/fusion)\tstrand2(" \
+             "gene/fusion)\tbreakpoint1\tbreakpoint2\tsite1\tsite2\ttype\tdirection1\tdirection2\tsplit_reads1" \
+             "\tsplit_reads2\tdiscordant_mates\tcoverage1\tcoverage2\tconfidence\tclosest_genomic_breakpoint1" \
+             "\tclosest_genomic_breakpoint2\tfilters\tfusion_transcript\treading_frame\tpeptide_sequence" \
+             "\tread_identifiers\n "
     try:
         with open(output_file, "w") as f_out:
-            f_out.write("#gene1	gene2\tstrand1(gene/fusion)\tstrand2(gene/fusion)\t"
-                        "breakpoint1\tbreakpoint2\tsite1\tsite2\ttype\tdirection1\t"
-                        "direction2\tsplit_reads1\tsplit_reads2\tdiscordant_mates\t"
-                        "coverage1\tcoverage2\tconfidence\tclosest_genomic_breakpoint1\t"
-                        "closest_genomic_breakpoint2\tfilters\tfusion_transcript\t"
-                        "reading_frame\tpeptide_sequence\tread_identifiers\n")
+            f_out.write(header)
             f_out.write(out_string)
         f_out.close()
+
+        if fusion_inspector_format and out_string_fusion_inspector != "":
+            with open((str(output_file) + ".FI"), "w") as f_out:
+                f_out.write("#Fusion_Partners\t" + header)
+                f_out.write(out_string_fusion_inspector)
+            f_out.close()
     except (FileNotFoundError, IOError) as e:
         print("ERROR: Check output file.", e.args)
         exit(1)
 
 
-def process_arriba(file_content, spanning_threshold=8, junction_threshold=8):
+def process_arriba(file_content, fusion_inspector_format, spanning_threshold=8, junction_threshold=8):
     """
     This function reads the content of an opened file and filters the rows.
 
+    :param fusion_inspector_format:
     :param file_content: content of input file going to be processed.
     :param spanning_threshold: Amount of spanning reads to filter by.
     :param junction_threshold: Amount of junction reads to filter by.
@@ -47,6 +56,7 @@ def process_arriba(file_content, spanning_threshold=8, junction_threshold=8):
     """
 
     out_string = ""
+    out_string_fusion_inspector = ""
     try:
         for line in file_content:
             # Parse everything except the header
@@ -57,7 +67,14 @@ def process_arriba(file_content, spanning_threshold=8, junction_threshold=8):
                 # Check if respective read counts are above specified threshold and if so, add to output
                 if check_value_above_filter(spanning_read_count, spanning_threshold):
                     out_string += line
-        return out_string
+                    if fusion_inspector_format:
+                        left_gene = splitted_line[0]
+                        right_gene = splitted_line[1]
+                        if left_gene + "--" + right_gene not in out_string_fusion_inspector:
+                            # Identical output as for no fusion-inspector, except for the first column
+                            # (e.g. <fusion-partner-1>--<fusion-partner-2>)
+                            out_string_fusion_inspector += left_gene + "--" + right_gene + "\t" + line
+        return out_string, out_string_fusion_inspector
     except:
         print("ERROR: input file not from tool \'Arriba\'.")
         exit(1)

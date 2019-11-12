@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
 
+from collective_script.methods import open_file
 from fusioncatcher.methods import create_fc_output, process_fusion_catcher
 from starfusion.methods import create_sf_output, process_star_fusion
 from jaffa.methods import create_jaffa_output, process_jaffa
@@ -20,22 +21,6 @@ This script makes use of the python packages "fusioncatcher" and "starfusion".
 """
 
 
-def open_file(file_name):
-    """
-    This function opens a desired file and returns the content.
-
-    :param file_name: name of input file going to be processed.
-    :return: content of the opened file.
-    """
-    try:
-        with open(file_name, "r") as f:
-            content = f.readlines()
-        f.close()
-        return content
-    except (FileNotFoundError, IOError) as e:
-        print("ERROR: Check input file.", e.args)
-        exit(1)
-
 
 def main():
     """
@@ -46,6 +31,10 @@ def main():
     input_file = args.input
     output_file = args.output
     file_content = open_file(input_file)
+    fusion_inspector_format = False
+
+    if args.fusion_inspector == "yes":
+        fusion_inspector_format = True
 
     if args.tool == "starfusion":
         junction_threshold = args.threshold_junction
@@ -54,8 +43,8 @@ def main():
         create_sf_output(output_file, out_string)
 
     if args.tool == "fusioncatcher":
-        out_string = process_fusion_catcher(file_content)
-        create_fc_output(output_file, out_string)
+        out_string, out_string_fusion_inspector = process_fusion_catcher(file_content, fusion_inspector_format)
+        create_fc_output(output_file, out_string, fusion_inspector_format, out_string_fusion_inspector)
 
     if args.tool == "jaffa":
         spanning_threshold = args.threshold_spanning
@@ -66,8 +55,8 @@ def main():
     if args.tool == "arriba":
         junction_threshold = args.threshold_junction
         spanning_threshold = args.threshold_spanning
-        out_string = process_arriba(file_content, spanning_threshold, junction_threshold)
-        create_arriba_output(output_file, out_string)
+        out_string, out_string_fusion_inspector = process_arriba(file_content, spanning_threshold, junction_threshold)
+        create_arriba_output(output_file, out_string, fusion_inspector_format, out_string_fusion_inspector)
 
 def parse_arguments():
     """
@@ -89,7 +78,9 @@ def parse_arguments():
                         default=8)
     parser.add_argument("--threshold-confidence", type=str, help="Confidence level to filter by (only jaffa)",
                         default="HighConfidence", choices=["HighConfidence", "MediumConfidence", "LowConfidence"])
-
+    parser.add_argument("--fusion-inspector", type=str, help="Additional filtered file with the first column formatted"
+                                                             " for FusionInspector",
+                        choices=("yes", "no"), default="no")
     args = parser.parse_args()
 
     # Only if starfusion or jaffa or arriba is the selected tool will you be able to specify a threshold for spanning reads.

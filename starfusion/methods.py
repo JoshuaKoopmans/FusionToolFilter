@@ -56,5 +56,5 @@ def process_star_fusion(file_content, spanning_threshold=8, junction_threshold=8
                     out_string += line
         return out_string
     except:
-        print("ERROR: input file not from selected tool.")
+        print("ERROR: input file not from tool \'STAR-Fusion\'.")
         exit(1)
