@@ -34,7 +34,7 @@ def create_arriba_output(output_file, out_string, fusion_inspector_format, out_s
             f_out.write(out_string)
         f_out.close()
 
-        if fusion_inspector_format and out_string_fusion_inspector != "":
+        if fusion_inspector_format:
             with open((str(output_file) + ".FI"), "w") as f_out:
                 f_out.write("#Fusion_Partners\t" + header)
                 f_out.write(out_string_fusion_inspector)
