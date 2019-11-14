@@ -17,16 +17,16 @@ tool.
 
 Arguments:<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-h`, `--help`            show this help message and exit<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-i`, `--input` INPUT
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-i`, `--input`
                         Input file<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-o`, `--output` OUTPUT
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-o`, `--output` 
                         Desired output file name<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-t`, `--tool` {starfusion,fusioncatcher,jaffa,arriba}
                         Select tool that generated output file<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--threshold-junction` THRESHOLD_JUNCTION
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--threshold-junction` 
                         Amount of junction reads to filter by (only starfusion
                         & arriba)<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--threshold-spanning` THRESHOLD_SPANNING
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--threshold-spanning` 
                         Amount of spanning frag reads to filter by (only
                         starfusion & arriba)<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--threshold-confidence` {HighConfidence,MediumConfidence,LowConfidence}
