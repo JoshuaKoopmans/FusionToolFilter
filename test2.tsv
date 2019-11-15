@@ -1,0 +1,3 @@
+transcript	spanning_pairs	spanning_reads	contig_break	chrom1	base1	strand1	chrom2	base2	strand2	gap	rearrangement	aligns	inframe	fusion_genes	known	classification
+ERR3003530.15901313/2	15	8	116	chr17_GL000258v2_alt	691842	-	chr17_GL000258v2_alt	398407	-	293.431	TRUE	TRUE	FALSE	KANSL1:ARL17B	Yes	HighConfidence
+ERR3003530.1493148/1	11	11	99	chr9	130714455	+	chr22	23292541	+	Inf	TRUE	TRUE	TRUE	ABL1:BCR	Yes	HighConfidence
