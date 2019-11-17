@@ -1,13 +1,24 @@
-def open_file(file_name):
+import csv
+
+
+def open_file(file_name, csv_format=False):
     """
     This function opens a desired file and returns the content.
 
+    :param csv_format:
     :param file_name: name of input file going to be processed.
     :return: content of the opened file.
     """
     try:
+
         with open(file_name, "r") as f:
-            content = f.readlines()
+            if csv_format:
+                reader = csv.reader(f, delimiter=',', dialect="excel")
+                content = []
+                for row_list in reader:
+                    content.append([item.rstrip() for item in row_list])
+            else:
+                content = f.readlines()
         f.close()
         return content
     except (FileNotFoundError, IOError) as e:

@@ -30,7 +30,10 @@ def main():
     args = parse_arguments()
     input_file = args.input
     output_file = args.output
-    file_content = open_file(input_file)
+    if args.tool == "jaffa":
+        file_content = open_file(input_file, True)
+    else:
+        file_content = open_file(input_file, False)
     fusion_inspector_format = False
 
     if args.fusion_inspector == "yes":
@@ -48,9 +51,9 @@ def main():
 
     if args.tool == "jaffa":
         spanning_threshold = args.threshold_spanning
-        # confidence_threshold = args.threshold_confidence
-        out_string = process_jaffa(file_content, spanning_threshold)
-        create_jaffa_output(output_file, out_string)
+        confidence_threshold = args.threshold_confidence
+        out_string, out_string_fusion_inspector = process_jaffa(file_content, fusion_inspector_format, confidence_threshold, spanning_threshold)
+        create_jaffa_output(output_file, out_string, fusion_inspector_format, out_string_fusion_inspector)
 
     if args.tool == "arriba":
         junction_threshold = args.threshold_junction
@@ -77,7 +80,7 @@ def parse_arguments():
                                                                "(only starfusion & arriba)",
                         default=8)
     parser.add_argument("--threshold-confidence", type=str, help="Confidence level to filter by (only jaffa)",
-                        default="HighConfidence", choices=["HighConfidence", "MediumConfidence", "LowConfidence"])
+                        default="All", choices=["HighConfidence", "MediumConfidence", "LowConfidence", "All"])
     parser.add_argument("--fusion-inspector", type=str, help="Additional filtered file with the first column formatted"
                                                              " for FusionInspector",
                         choices=("yes", "no"), default="no")
@@ -93,9 +96,9 @@ def parse_arguments():
     if (args.tool not in ["starfusion", "jaffa", "arriba"]) and args.threshold_spanning != 8:
         parser.error('--threshold-spanning can only be set when --tool=starfusion or --tool=jaffa or --tool=arriba.')
         exit(1)
-    # if args.tool != 'jaffa' and args.threshold_confidence != "HighConfidence":
-    #     parser.error('--threshold-confidence can only be set when --tool=jaffa.')
-    #     exit(1)
+    if args.tool not in ["jaffa"] and args.threshold_confidence not in ["All"]:
+        parser.error('--threshold-confidence can only be set when --tool=jaffa.')
+        exit(1)
     return args
 
 
