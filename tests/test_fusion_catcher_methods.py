@@ -1,5 +1,5 @@
 import unittest
-from fusioncatcher.methods import check_row_false_positives, process_fusion_catcher
+from modules.fusioncatcher.methods import check_row_false_positives, process_fusion_catcher
 
 
 class SolutionProcess:

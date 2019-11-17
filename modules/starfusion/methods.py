@@ -10,7 +10,7 @@ Email: Joshua.Koopmans@radboudumc.nl
 
 This script contains the methods used for the processing of STAR-Fusion outputs.
 """
-from collective_script.methods import check_value_above_filter
+from modules.collective_script.methods import check_value_above_filter
 
 def create_sf_output(output_file, out_string):
     """

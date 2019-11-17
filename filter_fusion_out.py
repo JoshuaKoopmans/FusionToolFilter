@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import argparse
 
-from collective_script.methods import open_file
-from fusioncatcher.methods import create_fc_output, process_fusion_catcher
-from starfusion.methods import create_sf_output, process_star_fusion
-from jaffa.methods import create_jaffa_output, process_jaffa
-from arriba.methods import create_arriba_output, process_arriba
+from modules.collective_script.methods import open_file
+from modules.fusioncatcher.methods import create_fc_output, process_fusion_catcher
+from modules.starfusion.methods import create_sf_output, process_star_fusion
+from modules.jaffa.methods import create_jaffa_output, process_jaffa
+from modules.arriba.methods import create_arriba_output, process_arriba
 
 """
 ##################################################

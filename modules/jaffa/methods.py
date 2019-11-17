@@ -11,7 +11,6 @@ Email: Joshua.Koopmans@radboudumc.nl
 This script contains the methods used for the processing of JAFFA outputs.
 """
 
-import csv
 def create_jaffa_output(output_file, out_string, fusion_inspector_format, out_string_fusion_inspector=""):
     """
         This function creates an output file and dumps the fusion partners in it.

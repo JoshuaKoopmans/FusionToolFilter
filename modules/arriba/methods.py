@@ -10,7 +10,7 @@ Email: Joshua.Koopmans@radboudumc.nl
 
 This script contains the methods used for the processing of Arriba outputs.
 """
-from collective_script.methods import check_value_above_filter
+from modules.collective_script.methods import check_value_above_filter
 
 
 def create_arriba_output(output_file, out_string, fusion_inspector_format, out_string_fusion_inspector=""):
