@@ -73,7 +73,7 @@ def process_arriba(file_content, fusion_inspector_format, spanning_threshold=8, 
                         if left_gene + "--" + right_gene not in out_string_fusion_inspector:
                             # Identical output as for no fusion-inspector, except for the first column
                             # (e.g. <fusion-partner-1>--<fusion-partner-2>)
-                            out_string_fusion_inspector += left_gene + "--" + right_gene + "\t" + line
+                            out_string_fusion_inspector += str(left_gene).strip() + "--" + str(right_gene).strip() + "\t" + line
         return out_string, out_string_fusion_inspector
     except:
         print("ERROR: input file not from tool \'Arriba\'.")
