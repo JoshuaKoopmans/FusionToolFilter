@@ -27,7 +27,7 @@ def create_arriba_output(output_file, out_string, fusion_inspector_format, out_s
              "gene/fusion)\tbreakpoint1\tbreakpoint2\tsite1\tsite2\ttype\tdirection1\tdirection2\tsplit_reads1" \
              "\tsplit_reads2\tdiscordant_mates\tcoverage1\tcoverage2\tconfidence\tclosest_genomic_breakpoint1" \
              "\tclosest_genomic_breakpoint2\tfilters\tfusion_transcript\treading_frame\tpeptide_sequence" \
-             "\tread_identifiers\n "
+             "\tread_identifiers\n"
     try:
         with open(output_file, "w") as f_out:
             f_out.write(header)

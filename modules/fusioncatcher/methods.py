@@ -50,7 +50,7 @@ def create_fc_output(output_file, out_string, fusion_inspector_format, out_strin
              "\tSpanning_unique_reads\tLongest_anchor_found\tFusion_finding_method\tFusion_point_for_gene_1(" \
              "5end_fusion_partner)\tFusion_point_for_gene_2(3end_fusion_partner)\tGene_1_id(" \
              "5end_fusion_partner)\tGene_2_id(3end_fusion_partner)\tExon_1_id(5end_fusion_partner)\tExon_2_id(" \
-             "3end_fusion_partner)\tFusion_sequence\tPredicted_effect\n "
+             "3end_fusion_partner)\tFusion_sequence\tPredicted_effect\n"
 
     try:
         with open(output_file, "w") as f_out:
