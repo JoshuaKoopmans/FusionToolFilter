@@ -51,9 +51,14 @@ def process_star_fusion(file_content, spanning_threshold=8, junction_threshold=8
                 splitted_line = line.split("\t")
                 junction_read_count = splitted_line[1]
                 spanning_read_count = splitted_line[2]
-                if check_value_above_filter(junction_read_count, junction_threshold) and \
-                        check_value_above_filter(spanning_read_count, spanning_threshold):
-                    out_string += line
+                if [int(junction_read_count), int(spanning_read_count)].count(0) == 1:
+                    if check_value_above_filter(junction_read_count, junction_threshold) or \
+                            check_value_above_filter(spanning_read_count, spanning_threshold):
+                        out_string += line
+                    elif check_value_above_filter(junction_read_count, junction_threshold) and \
+                            check_value_above_filter(spanning_read_count, spanning_threshold):
+                        out_string += line
+
         return out_string
     except:
         print("ERROR: input file not from tool \'STAR-Fusion\'.")
