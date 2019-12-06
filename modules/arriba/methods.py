@@ -64,8 +64,9 @@ def process_arriba(file_content, fusion_inspector_format, spanning_threshold=8, 
                 splitted_line = line.split("\t")
                 # Extract read counts from line
                 counts = [int(splitted_line[11]), int(splitted_line[12]), int(splitted_line[13])]
-                # Check if respective read counts are above specified threshold and if so, add to output
-                if not counts.count(0) >= 2:
+                # Check if respective read counts are above specified threshold and \
+                # if confidence is not "low" then add to output
+                if not counts.count(0) >= 2 and str(splitted_line[16]).strip() not in ["low"]:
                     out_string += line
                     if fusion_inspector_format:
                         left_gene = splitted_line[0]
