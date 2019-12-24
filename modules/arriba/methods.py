@@ -62,11 +62,15 @@ def process_arriba(file_content, fusion_inspector_format, spanning_threshold=8, 
             # Parse everything except the header
             if not line.startswith("#"):
                 splitted_line = line.split("\t")
+
                 # Extract read counts from line
-                counts = [int(splitted_line[11]), int(splitted_line[12]), int(splitted_line[13])]
-                # Check if respective read counts are above specified threshold and \
+                counts_three = [int(splitted_line[11]), int(splitted_line[12]), int(splitted_line[13])]
+                counts_two = [int(splitted_line[11]), int(splitted_line[12])]
+
+                # Check if respective read counts are above specified threshold, check if 3 read count columns contain
+                # at least 2 non-zero values or two read columns contain at least 1 non-zero value and
                 # if confidence is not "low" then add to output
-                if not counts.count(0) >= 2 and str(splitted_line[16]).strip() not in ["low"]:
+                if (not counts_three.count(0) >= 2 or not counts_two.count(0) >= 1) and str(splitted_line[16]).strip() not in ["low"]:
                     out_string += line
                     if fusion_inspector_format:
                         left_gene = splitted_line[0]
