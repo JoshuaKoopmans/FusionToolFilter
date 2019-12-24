@@ -87,19 +87,19 @@ def process_fusion_catcher(file_content, fusion_inspector_format):
                 splitted_line = line.split("\t")
                 # Check if line contains banned terms indicating a false positive
                 if not check_row_false_positives(splitted_line[2]):
-                    fusion_finding_method = splitted_line[7]
+                    #fusion_finding_method = splitted_line[7]
                     # Only take the rows where the fusion finding method is a combination of aligners
-                    if ";" in fusion_finding_method:
-                        out_string += line
-                        # If fusion-inspector argument is set to "yes", generate file content for the additional file
-                        if fusion_inspector_format:
-                            left_gene = splitted_line[0]
-                            right_gene = splitted_line[1]
-                            if left_gene + "--" + right_gene not in out_string_fusion_inspector:
-                                # Identical output as for no fusion-inspector, except for the first column
-                                # (e.g. <fusion-partner-1>--<fusion-partner-2>)
-                                out_string_fusion_inspector += str(left_gene).strip() + "--" + str(
-                                    right_gene).strip() + "\t" + line
+                    #if ";" in fusion_finding_method:
+                    out_string += line
+                    # If fusion-inspector argument is set to "yes", generate file content for the additional file
+                    if fusion_inspector_format:
+                        left_gene = splitted_line[0]
+                        right_gene = splitted_line[1]
+                        if left_gene + "--" + right_gene not in out_string_fusion_inspector:
+                            # Identical output as for no fusion-inspector, except for the first column
+                            # (e.g. <fusion-partner-1>--<fusion-partner-2>)
+                            out_string_fusion_inspector += str(left_gene).strip() + "--" + str(
+                                right_gene).strip() + "\t" + line
 
         return out_string, out_string_fusion_inspector
     except:
